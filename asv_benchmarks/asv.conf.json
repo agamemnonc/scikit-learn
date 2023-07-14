@@ -30,7 +30,7 @@
 
     // List of branches to benchmark. If not provided, defaults to "master
     // (for git) or "default" (for mercurial).
-    // "branches": ["main"], // for git
+    "branches": ["main"],
     // "branches": ["default"],    // for mercurial
 
     // The DVCS being used.  If not set, it will be automatically
@@ -73,10 +73,11 @@
     //
     "matrix": {
         "numpy": [],
-	    "scipy": [],
+        "scipy": [],
         "cython": [],
         "joblib": [],
-        "threadpoolctl": []
+        "threadpoolctl": [],
+        "pandas": []
     },
 
     // Combinations of libraries/python versions can be excluded/included

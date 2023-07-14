@@ -6,7 +6,7 @@ Model-based and sequential feature selection
 This example illustrates and compares two approaches for feature selection:
 :class:`~sklearn.feature_selection.SelectFromModel` which is based on feature
 importance, and
-:class:`~sklearn.feature_selection.SequentialFeatureSelection` which relies
+:class:`~sklearn.feature_selection.SequentialFeatureSelector` which relies
 on a greedy approach.
 
 We use the Diabetes dataset, which consists of 10 features collected from 442
@@ -16,10 +16,8 @@ Authors: `Manoj Kumar <mks542@nyu.edu>`_,
 `Maria Telenczuk <https://github.com/maikia>`_, Nicolas Hug.
 
 License: BSD 3 clause
+
 """
-
-print(__doc__)
-
 
 # %%
 # Loading the data
@@ -38,20 +36,21 @@ print(diabetes.DESCR)
 # ------------------------------------
 #
 # To get an idea of the importance of the features, we are going to use the
-# :class:`~sklearn.linear_model.LassoCV` estimator. The features with the
+# :class:`~sklearn.linear_model.RidgeCV` estimator. The features with the
 # highest absolute `coef_` value are considered the most important.
 # We can observe the coefficients directly without needing to scale them (or
 # scale the data) because from the description above, we know that the features
 # were already standardized.
 # For a more complete example on the interpretations of the coefficients of
 # linear models, you may refer to
-# :ref:`sphx_glr_auto_examples_inspection_plot_linear_model_coefficient_interpretation.py`.
+# :ref:`sphx_glr_auto_examples_inspection_plot_linear_model_coefficient_interpretation.py`.  # noqa: E501
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.linear_model import LassoCV
 
-lasso = LassoCV().fit(X, y)
-importance = np.abs(lasso.coef_)
+from sklearn.linear_model import RidgeCV
+
+ridge = RidgeCV(alphas=np.logspace(-6, 6, num=5)).fit(X, y)
+importance = np.abs(ridge.coef_)
 feature_names = np.array(diabetes.feature_names)
 plt.bar(height=importance, x=feature_names)
 plt.title("Feature importances via coefficients")
@@ -69,16 +68,16 @@ plt.show()
 #
 # Since we want to select only 2 features, we will set this threshold slightly
 # above the coefficient of third most important feature.
-from sklearn.feature_selection import SelectFromModel
 from time import time
+
+from sklearn.feature_selection import SelectFromModel
 
 threshold = np.sort(importance)[-3] + 0.01
 
 tic = time()
-sfm = SelectFromModel(lasso, threshold=threshold).fit(X, y)
+sfm = SelectFromModel(ridge, threshold=threshold).fit(X, y)
 toc = time()
-print("Features selected by SelectFromModel: "
-      f"{feature_names[sfm.get_support()]}")
+print(f"Features selected by SelectFromModel: {feature_names[sfm.get_support()]}")
 print(f"Done in {toc - tic:.3f}s")
 
 # %%
@@ -100,20 +99,26 @@ print(f"Done in {toc - tic:.3f}s")
 from sklearn.feature_selection import SequentialFeatureSelector
 
 tic_fwd = time()
-sfs_forward = SequentialFeatureSelector(lasso, n_features_to_select=2,
-                                        direction='forward').fit(X, y)
+sfs_forward = SequentialFeatureSelector(
+    ridge, n_features_to_select=2, direction="forward"
+).fit(X, y)
 toc_fwd = time()
 
 tic_bwd = time()
-sfs_backward = SequentialFeatureSelector(lasso, n_features_to_select=2,
-                                         direction='backward').fit(X, y)
+sfs_backward = SequentialFeatureSelector(
+    ridge, n_features_to_select=2, direction="backward"
+).fit(X, y)
 toc_bwd = time()
 
-print("Features selected by forward sequential selection: "
-      f"{feature_names[sfs_forward.get_support()]}")
+print(
+    "Features selected by forward sequential selection: "
+    f"{feature_names[sfs_forward.get_support()]}"
+)
 print(f"Done in {toc_fwd - tic_fwd:.3f}s")
-print("Features selected by backward sequential selection: "
-      f"{feature_names[sfs_backward.get_support()]}")
+print(
+    "Features selected by backward sequential selection: "
+    f"{feature_names[sfs_backward.get_support()]}"
+)
 print(f"Done in {toc_bwd - tic_bwd:.3f}s")
 
 # %%

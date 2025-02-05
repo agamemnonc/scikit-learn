@@ -18,8 +18,8 @@ algorithm. The rows and columns of the shuffled matrix are then rearranged to
 plot the biclusters found.
 """
 
-# Author: Kemal Eren <kemal@kemaleren.com>
-# License: BSD 3 clause
+# Authors: The scikit-learn developers
+# SPDX-License-Identifier: BSD-3-Clause
 
 # %%
 # Generate sample data
@@ -57,7 +57,7 @@ col_idx_shuffled = rng.permutation(data.shape[1])
 
 # %%
 # We redefine the shuffled data and plot it. We observe that we lost the
-# strucuture of original data matrix.
+# structure of original data matrix.
 data = data[row_idx_shuffled][:, col_idx_shuffled]
 
 plt.matshow(data, cmap=plt.cm.Blues)

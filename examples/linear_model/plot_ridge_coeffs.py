@@ -51,7 +51,8 @@ can fine-tune the degree of constraint imposed on the weights, training a model
 capable of generalizing well to unseen data while avoiding overfitting.
 """
 
-# Author: Kornel Kielczewski -- <kornel.k@plusnet.pl>
+# Authors: The scikit-learn developers
+# SPDX-License-Identifier: BSD-3-Clause
 
 # %%
 # Purpose of this example
@@ -162,7 +163,7 @@ _ = axs[1].set_ylabel("Mean squared error")
 # `alpha` increases, the highest coefficients shrink more rapidly, rendering
 # their corresponding features less influential in the training process. This
 # can enhance a model's ability to generalize to unseen data (if there was a lot
-# of noise to capture), but it also poses the risk of loosing performance if the
+# of noise to capture), but it also poses the risk of losing performance if the
 # regularization becomes too strong compared to the amount of noise the data
 # contained (as in this example).
 #
